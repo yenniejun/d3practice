@@ -3,12 +3,8 @@
   stroke: black;
 }
 
-.bubble text {
+.chart text {
   fill: black;
-  /*font-family: 'Mansalva', cursive;*/
+  font-family: 'Mansalva', cursive;
   text-anchor: middle;
-}
-
-.bubble:hover {
-	fill: purple;
 }
