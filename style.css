@@ -1,0 +1,17 @@
+.chart rect {
+  fill: steelblue;
+}
+
+.chart text {
+  fill: black;
+  font: 10px sans-serif;
+  text-anchor: start;
+}
+
+.bar:hover {
+	fill: purple;
+}
+
+.bar:hover > text {
+	display:none;
+}
