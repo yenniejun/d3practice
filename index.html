@@ -3,6 +3,7 @@
 <head>
 	<script src="https://d3js.org/d3.v5.min.js"></script>
 	<link rel="stylesheet" href="style.css"/>
+	<link href="https://fonts.googleapis.com/css?family=Mansalva&display=swap" rel="stylesheet">
 
 </head>
 
@@ -17,45 +18,49 @@
 
 <script>
 
+// title
 d3.select(".title")
 	.text('Cities By Population');
 
+//todo: add info box (interactive)
+
 d3.csv("cities.csv").then(function(data, error) {
-	data.forEach((d) => d.Population = d.Population.replace(/,/g, ''))
+	// clean data
+	// todo: replace with await
+	data.forEach((d) => {
+		d.Population = d.Population.replace(/,/g, '')
+		d.x = Math.random() * 500;
+		d.y = Math.random() * 500;
+	});
 
-	var width = 420;
-	var barHeight = 20;
+	console.log(data)
 
-	var x = d3.scaleSqrt()
-	    .domain([0, d3.max(data)])
-	    .range([0, width]);
-
+	// chart
 	var chart = d3.select(".chart")
-	    .attr("width", width * 2)
+    .attr("width", '100%')
+    .attr("height", 1000); // todo make 100 percent
 
-  x.domain([0, d3.max(data, function(d) { return d.Population; })]);
+	var x = d3.scaleLinear()
+    .domain([0, d3.max(data, function(d) { return d.Population; })])
+    .range([0, 30]);
 
-  chart.attr("height", barHeight * data.length*2);
+	var bubble = chart.selectAll("myCircles")
+		 .data(data)
+		 .enter()
+		 .append("circle")
+		 		.attr("class", "bubble")
+		 		.attr("cx", d => d.x)
+        .attr("cy", d => d.y)
+					.attr("r", d => Math.sqrt(d.Population / Math.PI)/15) 
+        .style("fill", "69b3a2")
+        .attr("stroke", "#69b3a2")
+        .attr("stroke-width", 3)
+        .attr("fill-opacity", .4)
 
-  var bar = chart.selectAll("g")
-      .data(data)
-    .enter().append("g")
-      .attr("transform", function(d, i) { return "translate(0," + i * barHeight *1.5+ ")"; });
-
-  bar.append("rect")
-  		.attr("class", "bar")
-      .attr("width", function(d) { return x(d.Population); })
-      .attr("height", barHeight)
-      .attr("cityName", d => d.City);
-
-  console.log(chart.selectAll("rect"))
-
-  chart.selectAll("rect")
-  	.text(function(d) {return d.City});
-
-  bar.append("text")
-      .attr("x", function(d) { return x(d.Population) + 5; })
-      .attr("y", barHeight / 2)
+  // // append text
+  bubble.append("g")
+      .attr("x", d => d.x/2)
+      .attr("y", d => d.y/2)
       .attr("dy", ".35em")
       .text(function(d) { return d.City; });
 });

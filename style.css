@@ -1,17 +1,14 @@
-.chart rect {
+.chart circle {
   fill: steelblue;
+  stroke: black;
 }
 
-.chart text {
+.bubble text {
   fill: black;
-  font: 10px sans-serif;
-  text-anchor: start;
+  /*font-family: 'Mansalva', cursive;*/
+  text-anchor: middle;
 }
 
-.bar:hover {
+.bubble:hover {
 	fill: purple;
-}
-
-.bar:hover > text {
-	display:none;
 }
