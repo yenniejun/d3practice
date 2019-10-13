@@ -1,5 +1,17 @@
+body {
+	height: 100%;
+	width: 100%;
+}
+
+.chart {
+	overflow: visible;
+}
+
+.chart g {
+	height: 100px;
+}
+
 .chart circle {
-  fill: steelblue;
   stroke: black;
 }
 

@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<script src="https://d3js.org/d3.v5.min.js"></script>
+	<link rel="stylesheet" href="style.css"/>
+	<link href="https://fonts.googleapis.com/css?family=Mansalva&display=swap" rel="stylesheet">
+
+</head>
+
+<div>
+	<p class="title"></p>
+	<svg class="chart"></svg>
+
+</div>
+
+
+<body>
+
+<script>
+
+// title
+d3.select(".title")
+	.text('Simulation');
+
+var width = 300, height = 300
+var nodes = [{}, {}, {}, {}, {}]
+
+var simulation = d3.forceSimulation(nodes)
+  .force('charge', d3.forceManyBody())
+  .force('center', d3.forceCenter(width / 2, height / 2))
+  .on('tick', ticked);
+
+
+</script>
+
+</body>
+
+</html>
