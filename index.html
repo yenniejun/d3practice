@@ -8,12 +8,16 @@
 </head>
 
 <div>
-	<p class="title"></p>
-	<svg class="chart"></svg>
+	<div class="titleBox">
+    <p class="title"></p>
+    <p class="cityName">Choose a city</p>
+    <p class="population">Population:</p>
+  </div>
+
+	<svg class="chart"> 
+  </svg>
 
 </div>
-
-
 <body>
 
 <script>
@@ -24,11 +28,6 @@
 d3.select(".title")
 	.text('Cities By Population');
 
-  //  // chart
-//  var chart = d3.select(".chart")
-//     .attr("width", '100%')
-//     .attr("height", 1000); // todo make 100 percent
-
 var width = 300, height = 300
 
 data = d3.csv("cities.csv").then(function(data, error) {
@@ -36,8 +35,6 @@ data = d3.csv("cities.csv").then(function(data, error) {
  // todo: replace with await
  data.forEach((d) => {
    d.Population = d.Population.replace(/,/g, '')
-   d.x = Math.random() * 1000 + d.Population; // + d.Population
-   d.y = Math.random() * 1000 + d.Population;
    d.radius = Math.sqrt(d.Population / Math.PI)
  });
 
@@ -45,8 +42,6 @@ data = d3.csv("cities.csv").then(function(data, error) {
     var d = {
       id: i.City,
       radius: i.radius,
-      cx: i.x,
-      cy: i.y,
       population: i.Population
     };
     return d;
@@ -58,56 +53,19 @@ var simulation = d3.forceSimulation(nodes)
   .force('collision', d3.forceCollide().radius(d => d.radius/20))
   .on('tick', ticked);
 
+var container = d3.select('svg')
+  .selectAll('circle')
+  .data(nodes)
+  .enter()
+  .append("g") // block containing the circle
+  .attr("class", "circleContainer")
 
-
-//todo: add info box (interactive)
-
-// d3.csv("cities.csv").then(function(data, error) {
-// 	// clean data
-// 	// todo: replace with await
-// 	data.forEach((d) => {
-// 		d.Population = d.Population.replace(/,/g, '')
-// 		d.x = Math.random() * 500;
-// 		d.y = Math.random() * 500;
-// 	});
-
-// 	console.log(data)
-
-// 	// chart
-// 	var chart = d3.select(".chart")
-//     .attr("width", '100%')
-//     .attr("height", 1000); // todo make 100 percent
-
-// 	var x = d3.scaleLinear()
-//     .domain([0, d3.max(data, function(d) { return d.Population; })])
-//     .range([0, 30]);
-
-// 	var bubble = chart.selectAll("myCircles")
-// 		 .data(data)
-// 		 .enter()
-// 		 .append("g") // block containing the circle
-// 		 		.attr("class", "circleContainer")
-// 		 		.attr("transform", function(d){return "translate("+d.x+","+d.y+")"});
-
-//   bubble.append("text")
-//    			.attr("x", d => d.x)
-//       	.attr("y", d => d.y)
-// 	      // .attr("dy", ".35em")	
-//       	.text(d =>  d.City);
-
-
-// 	bubble
-// 		 .append("circle") // the circle
-// 		 		.attr("class", "bubble")
-// 		 		.attr("cx", d => d.x)
-//         .attr("cy", d => d.y)
-// 					.attr("r", d => Math.sqrt(d.Population / Math.PI)/15) 
-//         .style("fill", "69b3a2")
-//         .attr("stroke", "#69b3a2")
-//         .attr("stroke-width", 3)
-//         .attr("fill-opacity", .4)
-//         .on("mouseover", handleMouseOver)
-//         .on("mouseout", handleMouseOut);
+// d3.select('.circleContainer')
+//   .data(nodes)
+//   .append("text")
+//   .attr("x", d => d.x)
+//   .attr("y", d => d.y)
+//   .text(d => d.id);
 
 });
 
@@ -122,7 +80,7 @@ async function loadData() {
 
 function ticked() {
    var chart = d3.select(".chart")
-    .attr("width", '100%')
+    .attr("width", 1000)
     .attr("height", 1000); // todo make 100 percent
 
    var x = d3.scaleLinear()
@@ -134,24 +92,6 @@ function ticked() {
     .data(nodes)
 
     //  var bubble = chart.selectAll("myCircles")
-
-
-  // block containing the circle
-  container = bubble.enter()
-    .append("g") // block containing the circle
-    .attr("class", "circleContainer")
-    .attr("transform", d => {
-      xTrans = d.x*1.25 - 375;
-      yTrans = d.y*1.25 - 375;
-      return "translate(" + xTrans+ "," + yTrans + ")"
-    });
-
-  // add text
-  container.append("text")
-    .attr("x", d => d.x)
-    .attr("y", d => d.y)
-    // .attr("dy", ".35em") 
-    .text(d =>  d.id);
 
   // the bubble
   bubble.enter()
@@ -167,17 +107,34 @@ function ticked() {
     .attr("fill-opacity", .4)
     .attr("id", d => d.id)
     .on("mouseover", handleMouseOver)
-    .on("mouseout", handleMouseOut);
-
+    .on("mouseout", handleMouseOut)
+    .on("onend", handleOnEnd);
 
   bubble.exit().remove()
 
 }
 
+function handleOnEnd(d, i) {
+  console.log("HANDLE ON LOAD");
+  console.log(d)
+}
+
+
 function handleMouseOver(d, i) {
 	d3.select(this).transition().style("fill", "purple");
-  console.log(d)
+  console.log(d,i)
   // console.log(d.id + " " + d.radius + " " + d.population)
+  d3.select(".cityName").text("City: " + d.id);
+  d3.select(".population").text("Population: " + d.population);
+
+  d3.select('.circleContainer')
+    .append("text")
+    .attr("x", d.x)
+    .attr("y", d.y)
+    // .attr("dy", ".35em") 
+    .text(d.id);
+
+
 }
 
 function handleMouseOut(d, i) {

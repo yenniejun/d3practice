@@ -20,3 +20,22 @@ body {
   font-family: 'Mansalva', cursive;
   text-anchor: middle;
 }
+
+.titleBox {
+	font-family: 'Mansalva', cursive;
+	margin-left: 2rem;
+    margin-bottom: 2rem;
+    border-color: black;
+    border-style: groove;
+    padding: 0.5rem;
+    width: 20rem;
+}
+
+.titleBox p {
+	padding: unset;
+	margin: unset;
+}
+
+.title {
+	font-size: 2rem;
+}
