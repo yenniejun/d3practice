@@ -4,6 +4,7 @@
 	2. Randomize bubble colors
 	3. Add different filters (i.e. by continent)
 	4. Add real data
+	5. Plot on a map, show different fun facts
 */
 
 data = d3.csv("cities.csv").then(function(data, error) {
@@ -50,7 +51,7 @@ function simulateNodes() {
 	var simulation = d3.forceSimulation(nodes)
 	  .force('charge', d3.forceManyBody().strength(-10))
 	  .force('center', d3.forceCenter(300,300))
-	  .force('collision', d3.forceCollide().radius(d => d.radius/20))
+	  .force('collision', d3.forceCollide().radius(d => d.radius/25))
 	  .on('tick', ticked);
 
 	return simulation;
@@ -84,7 +85,7 @@ function ticked() {
   bubble.enter()
     .append('circle')
     .attr("class", "bubble")
-    .attr('r', d => d.radius/17)
+    .attr('r', d => d.radius/20)
     .merge(bubble)
     .attr('cx', d => d.x)
     .attr('cy', d => d.y)
