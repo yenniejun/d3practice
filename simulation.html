@@ -10,17 +10,18 @@
 <div>
 	<p class="title"></p>
 
-	<p>
+	<div class="slider">
 		<label for="colorChangeSpeed"
-			   style="display: inline-block; width:240px; text-align: right">
+			   style="display: inline-block; text-align: right">
          <span id="colorChangeSpeed-value">1000</span> ms
   		</label>
   		<input type="range" min="100" max="5000" value="1000" name="colorChangeSpeed" id="colorChangeSpeed">
-	</p>
+	</div>
 
-	<button onclick="changeColorScheme('b&w')">Black and White</button>
-	<button onclick="changeColorScheme('color')">Color</button>
-
+	<div class="buttons">
+		<button id="button-bw" onclick="changeColorScheme('bw')" >Black and White</button>
+		<button id="button-color" onclick="changeColorScheme('color')" style="background-color:NavajoWhite;border:2px solid steelblue">Color</button>
+	</div>
 
 	<svg viewBox = "-20 -20 100 100" class="chart" id="flower1">
 
@@ -49,9 +50,9 @@
 
 // um these are globals?
 duration = document.getElementById("colorChangeSpeed").value;
+colorscheme = 'color';
 
-
-blackAndWhiteColors = ["#000000","#080808","#101010","#181818","#202020","#282828","#303030","#383838","#404040","#484848","#505050","#585858","#606060","#686868","#696969","#707070","#787878","#808080","#888888","#909090","#989898","#A0A0A0","#A8A8A8","#A9A9A9","#B0B0B0","#B8B8B8","#BEBEBE","#C0C0C0","#C8C8C8","#D0D0D0","#D3D3D3","#D8D8D8","#DCDCDC","#E0E0E0","#E8E8E8","#F0F0F0","#F5F5F5","#F8F8F8","#FFFFFF"];
+blackAndWhiteColors = ["#303030","#383838","#404040","#484848","#505050","#585858","#606060","#686868","#696969","#707070","#787878","#808080","#888888","#909090","#989898","#A0A0A0","#A8A8A8","#A9A9A9","#B0B0B0","#B8B8B8","#BEBEBE","#C0C0C0","#C8C8C8","#D0D0D0","#D3D3D3","#D8D8D8","#DCDCDC","#E0E0E0","#E8E8E8","#F0F0F0","#F5F5F5","#F8F8F8"];
 
 d3.select("#colorChangeSpeed").on("change", val => {
 	newValue = document.getElementById("colorChangeSpeed").value;
@@ -65,7 +66,16 @@ d3.select("#colorChangeSpeed").on("change", val => {
 });
 
 function changeColorScheme(scheme) {
- 	console.log(scheme)
+ 	colorscheme = scheme;
+
+ 	// reset other button
+ 	d3.selectAll("button")
+ 		.style("background-color", "")
+ 		.style("border", "")
+
+ 	d3.select("#button-"+scheme)
+ 		.style("background-color", "NavajoWhite")
+ 		.style("border", "2px solid steelblue")
  }
 
 var colorPattern = () => {
@@ -73,16 +83,26 @@ var colorPattern = () => {
 }
 
 var blackAndWhitePattern = () => {
-	rand = Math.random(1,blackAndWhiteColors.length-1);
+	rand = Math.floor(Math.random() * blackAndWhiteColors.length-1);
 	return blackAndWhiteColors[rand];
 }
 
 function changeColor(i) {	
+	switch(colorscheme) {
+		case 'bw':
+			fillPattern = blackAndWhitePattern;
+			break;
+		case 'color': 
+		default:
+			fillPattern = colorPattern; 
+			break;
+	}
+
 	d3.select("#flower1").select("circle:nth-child("+i+")")
 		.transition()
 		.duration(duration)
-		.style("fill", colorPattern);
-	}
+		.style("fill", fillPattern);
+}
 
 var i = 1;
 setInterval(() => {
@@ -95,9 +115,19 @@ setInterval(() => {
 </script>
 
 <style>
-	body {
+	body, button {
 		font-family: 'Mansalva', cursive;
 	}
+
+	button {
+		font-size: 1rem;
+	}
+
+	.slider, .buttons {
+		margin: 1rem;
+		border-radius:0.2rem;
+	}
+
 </style>
 
 </body>
