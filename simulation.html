@@ -2,14 +2,43 @@
 <html>
 <head>
 	<script src="https://d3js.org/d3.v5.min.js"></script>
-	<link rel="stylesheet" href="style.css"/>
 	<link href="https://fonts.googleapis.com/css?family=Mansalva&display=swap" rel="stylesheet">
+
 
 </head>
 
 <div>
 	<p class="title"></p>
-	<svg class="chart"></svg>
+
+	<p>
+		<label for="colorChangeSpeed"
+			   style="display: inline-block; width:240px; text-align: right">
+         <span id="colorChangeSpeed-value">1000</span> ms
+  		</label>
+  		<input type="range" min="100" max="5000" value="1000" name="colorChangeSpeed" id="colorChangeSpeed">
+	</p>
+
+	<button onclick="changeColorScheme('b&w')">Black and White</button>
+	<button onclick="changeColorScheme('color')">Color</button>
+
+
+	<svg viewBox = "-20 -20 100 100" class="chart" id="flower1">
+
+		<circle class="petal" cx="0" cy="0" r="2" fill="none" transform="rotate(30) scale(1,10)" />
+		<circle class="petal" cx="0" cy="0" r="2" fill="none" transform="rotate(60) scale(1,10)" />
+		<circle class="petal" cx="0" cy="0" r="2" fill="none" transform="rotate(90) scale(1,10)" />
+
+		<circle class="petal" cx="0" cy="0" r="2" fill="none" transform="rotate(120) scale(1,10)" />
+		<circle class="petal" cx="0" cy="0" r="2" fill="none" transform="rotate(150) scale(1,10)" />
+		<circle class="petal" cx="0" cy="0" r="2" fill="none" transform="rotate(180) scale(1,10)" />
+
+		<circle class="middle" cy="0" cx="0" r="2.2" fill="black"
+		/>
+	</svg>
+
+	<svg viewBox = "-20 -20 100 0" class="chart" id="flower2">
+		<circle class="middle" cy="0" cx="0" r="4" fill="orange">
+	</svg>
 
 </div>
 
@@ -18,20 +47,58 @@
 
 <script>
 
-// title
-d3.select(".title")
-	.text('Simulation');
+// um these are globals?
+duration = document.getElementById("colorChangeSpeed").value;
 
-var width = 300, height = 300
-var nodes = [{}, {}, {}, {}, {}]
 
-var simulation = d3.forceSimulation(nodes)
-  .force('charge', d3.forceManyBody())
-  .force('center', d3.forceCenter(width / 2, height / 2))
-  .on('tick', ticked);
+blackAndWhiteColors = ["#000000","#080808","#101010","#181818","#202020","#282828","#303030","#383838","#404040","#484848","#505050","#585858","#606060","#686868","#696969","#707070","#787878","#808080","#888888","#909090","#989898","#A0A0A0","#A8A8A8","#A9A9A9","#B0B0B0","#B8B8B8","#BEBEBE","#C0C0C0","#C8C8C8","#D0D0D0","#D3D3D3","#D8D8D8","#DCDCDC","#E0E0E0","#E8E8E8","#F0F0F0","#F5F5F5","#F8F8F8","#FFFFFF"];
+
+d3.select("#colorChangeSpeed").on("change", val => {
+	newValue = document.getElementById("colorChangeSpeed").value;
+	console.log(newValue);
+
+	// adjust the text on the range slider
+	d3.select("#colorChangeSpeed-value").text(newValue);
+	d3.select("#colorChangeSpeed").property("value", newValue);
+
+	duration = newValue;
+});
+
+function changeColorScheme(scheme) {
+ 	console.log(scheme)
+ }
+
+var colorPattern = () => {
+	return "hsl(" + Math.random() * 360 + ",100%,50%)";
+}
+
+var blackAndWhitePattern = () => {
+	rand = Math.random(1,blackAndWhiteColors.length-1);
+	return blackAndWhiteColors[rand];
+}
+
+function changeColor(i) {	
+	d3.select("#flower1").select("circle:nth-child("+i+")")
+		.transition()
+		.duration(duration)
+		.style("fill", colorPattern);
+	}
+
+var i = 1;
+setInterval(() => {
+	changeColor(i)
+	i++;
+	i = i === 7 ? 0 : i;
+}, 200);
 
 
 </script>
+
+<style>
+	body {
+		font-family: 'Mansalva', cursive;
+	}
+</style>
 
 </body>
 
